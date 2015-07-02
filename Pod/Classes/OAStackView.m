@@ -134,6 +134,7 @@
   
   [self iterateArrangedSubviews:^(UIView *view, UIView *previousView) {
     [self.alignmentStrategy addConstraintsOnOtherAxis:view];
+    [self.alignmentStrategy alignView:view withPreviousView:previousView];
   }];
 }
 
@@ -156,6 +157,7 @@
   [self iterateArrangedSubviews:^(UIView *view, UIView *previousView) {
     [self.alignmentStrategy addConstraintsOnOtherAxis:view];
     [self.distributionStrategy alignView:view afterView:previousView];
+    [self.alignmentStrategy alignView:view withPreviousView:previousView];
   }];
 }
 
@@ -222,10 +224,6 @@
     if (constraints) {
       [self removeConstraints:constraints];
     }
-    
-    if (newItem) {
-      [self addSubview:view];
-    }
 
   } else if (stackIndex == 0) {
     // Prepending a new item
@@ -240,8 +238,10 @@
   }
   
   [self.distributionStrategy alignView:view afterView:previousView];
+  [self.alignmentStrategy alignView:view withPreviousView:previousView];
   [self.alignmentStrategy addConstraintsOnOtherAxis:view];
   [self.distributionStrategy alignView:nextView afterView:view];
+  [self.alignmentStrategy alignView:nextView withPreviousView:view];
 }
 
 - (void)willRemoveArrangedSubview:(UIView *)view {
